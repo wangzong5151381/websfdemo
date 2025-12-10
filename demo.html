@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head>
+    <title>引入JavaScript</title>
+</head>
+<body>
+    <h1>JavaScript示例</h1>
+
+	<button data="test">whx的按钮</button>
+   <div> <div><div data-sensors-click>
+		<img src="ceshiimage.jpg" alt="描述文字">
+		<p>p1</p>
+		<p>p2</p>
+		<p id="demo">原始文本</p>测试div
+	</div>div1
+	</div>div2
+	</div>
+    
+    <!-- 引入本地JavaScript文件 -->
+    <script charset='UTF-8' src="sensorsdata.min.js"></script>
+	 <script src="popup.min.js"></script>
+</body>
+
+<script>
+	var sensors = window['sensorsDataAnalytic201505'];
+	sensors.use('PageLeave'),
+	sensors.init({
+  		server_url: ['https://sdk-product-datasink.sensorsdata.cn/sa?project=default','https://sdk-product-datasink.sensorsdata.cn/sa?project=production'],
+		is_track_single_page:true, // 单页面配置，默认关闭。开启后自动监听 URL 有变化就会触发 $pageview 事件
+		use_client_time:true, 
+  		send_type:'beacon',
+		max_string_length:7000,
+		web_url:'https://sdk-product.sensorsdata.cn/warehousing/import?',
+		show_log:true,
+		heatmap: {
+			//是否开启点击图，default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭。
+			clickmap:'default',
+			 collect_tags:{
+        img : true
+    },
+			custom_property:function( element_target ){
+		//比如您需要给有 data=test 属性的标签的点击事件增加自定义属性 name:'aa' ，则代码如下：
+		if(element_target.getAttribute('data') === 'test'){
+			return {
+				data_track:'banner_button_click'
+			}
+		}
+	},
+			//是否开启触达图，not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启。
+			scroll_notice_map:'not_collect'
+		}   
+	});
+	sensors.identify(null)
+	sensors.registerPropertyPlugin({
+  isMatchedWithFilter:function(data){
+	return data.event === "$WebPageLeave"&&data.properties.$url==='http://localhost:8080/';
+  },
+  properties:function(data){
+
+	data.event = 'whxpageleave';
+	data.whxceshi='ceshi1'
+  }
+});
+sensors.registerPropertyPlugin({
+  isMatchedWithFilter:function(data){
+	return data.event === "$WebClick"&&data.properties.$url==='http://localhost:8080/';
+  },
+  properties:function(data){
+
+	data.$title='ceshi22'
+  }
+});
+	// sensors.logout();
+	// sensors.resetAnonymousIdentity();
+	// sensors.login(null)
+	
+	sensors.setProfile({ceshi:'xxx@xx'});
+	
+	// sensors.quick('autoTrack');
+	sensors.track('OpenApp', {
+		test_bool:'',
+
+	
+	channel_id:'xxx'
+})
+
+    // sensors.setProfile({email:'xxx@xx'});
+</script>
+</html>
